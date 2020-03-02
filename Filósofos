@@ -1,0 +1,73 @@
+import threading
+
+class hilo(threading.Thread):
+    def __init__(self, num):
+        threading.Thread.__init__(self)
+        self.num = num
+
+    def run(self):
+        print ("Soy el hilo", self.num)
+
+print ("Soy el hilo principal")
+
+for i in range(0, 10):
+  t = hilo(i)
+  t.start()
+  t.join()
+                                                                                                                                                     
+
+import random
+import threading
+import time
+
+class Filosofo(threading.Thread):
+  def _init_(self, num, tenedor):
+      threading.Thread._init_(self)
+      self.tenedor = tenedor
+      self.num = num
+      self.lock = threading.RLock()
+
+  def come(self):
+      print ("El filosofo "+str(self.num)+" come")
+
+  def piensa(self):
+      print ("El filosofo "+str(self.num)+" piensa")
+
+  def obtieneTenIzq(self):
+      print ("El filosofo "+str(self.num)+" obtiene tenedor izquierdo")
+      print ("obtiene el tenedor "+str(self.num))
+      self.tenedor[self.num].acquire()
+
+  def obtieneTenDer(self):
+      print ("El filosofo "+str(self.num)+" obtiene tenedor derecho")
+      self.tenedor[self.temp].acquire()
+
+  def liberaTenDer(self):
+      print ("El filosofo "+str(self.num)+" libera tenedor derecho")
+      self.tenedor[self.temp].release()
+
+  def liberaTenIzq(self):
+      print ("El filosofo "+str(self.num)+" libera tenedor izquierdo")
+      self.tenedor[self.num].release()
+
+
+  def run(self):
+      while(True):
+          self.piensa()
+          self.obtieneTenIzq()
+          self.obtieneTenDer()
+          self.come()
+          self.liberaTenDer()
+          self.liberaTenIzq()
+
+Nfilosofos = 5
+                                                                                                                                            
+tenedor = [1,1,1,1,1]
+
+for i in range(0, 4):
+  tenedor[i] = threading.BoundedSemaphore(1)
+
+for i in range(0, 4):
+  tenedor = Filosofo(i, tenedor)
+  tenedor.start()
+  time.sleep(0.5)
